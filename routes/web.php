@@ -28,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('/kategori', adminKategoriController::class);
         Route::resource('/merk', adminMerkController::class);
         Route::resource('/transaksi', adminTransaksiController::class);
+        Route::post('/transaksi/detail/create', [adminTransaksiDetailController::class, 'create']);
 
         // CRUD Jabatan
         Route::resource('/jabatan',adminJabatanController::class);

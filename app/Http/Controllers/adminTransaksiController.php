@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Transaksi;
 use App\Models\Produk;
+use App\Models\TransaksiDetail;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class adminTransaksiController extends Controller
@@ -34,7 +35,7 @@ class adminTransaksiController extends Controller
             'total' => 0,
         ];
 
-        $transaksi = Transaksi::create($data); // Membuat transaksi baru
+        $transaksi = Transaksi::create($data); 
         Alert::success('Sukses', 'Transaksi baru telah dibuat!');
         return redirect()->route('transaksi.edit', $transaksi->id);
     }
@@ -45,7 +46,7 @@ class adminTransaksiController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|unique:transaksis', // Validasi nama harus unik
+            'name' => 'required|unique:transaksis', 
         ]);
 
         Transaksi::create($data);
@@ -58,7 +59,7 @@ class adminTransaksiController extends Controller
      */
     public function show(string $id)
     {
-        $transaksi = Transaksi::findOrFail($id); // Mengambil transaksi berdasarkan ID
+        $transaksi = Transaksi::findOrFail($id); 
         $title = 'Detail Transaksi';
         $content = 'admin.transaksi.show';
 
@@ -70,16 +71,17 @@ class adminTransaksiController extends Controller
      */
     public function edit(string $id)
     {
-        $produk = Produk::get(); // Mendapatkan semua produk
+        $produk = Produk::get(); 
         $produk_id = request('produk_id');
         $p_detail = Produk::find($produk_id);
+        $transaksi_detail = TransaksiDetail::where('transaksi_id', $id)->get();
     
         $act = request('act'); // Tindakan: "min" atau "plus"
-        $qty = request('qty', 1); // Default qty = 1 jika tidak ada input
+        $qty = request('qty', 1);
     
         // Mengatur qty berdasarkan tindakan
         if ($act == 'min') {
-            $qty = max(1, $qty - 1); // Minimal qty adalah 1
+            $qty = max(1, $qty - 1); 
         } elseif ($act == 'plus') {
             $qty += 1;
         }
@@ -93,7 +95,7 @@ class adminTransaksiController extends Controller
         $title = 'Tambah Transaksi';
         $content = 'admin.transaksi.create';
     
-        return view('admin.layouts.wrapper', compact('content', 'title', 'produk', 'p_detail', 'qty', 'subtotal'));
+        return view('admin.layouts.wrapper', compact('content', 'title', 'produk', 'p_detail', 'qty', 'subtotal','transaksi_detail'));
     }
     
     /**
@@ -101,9 +103,9 @@ class adminTransaksiController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $transaksi = Transaksi::findOrFail($id); // Mencari transaksi berdasarkan ID
+        $transaksi = Transaksi::findOrFail($id); 
         $data = $request->validate([
-            'name' => 'required|unique:transaksis,name,' . $id, // Validasi nama unik, kecuali data ini
+            'name' => 'required|unique:transaksis,name,' . $id, 
         ]);
 
         $transaksi->update($data);
@@ -116,7 +118,7 @@ class adminTransaksiController extends Controller
      */
     public function destroy(string $id)
     {
-        $transaksi = Transaksi::findOrFail($id); // Mencari transaksi berdasarkan ID
+        $transaksi = Transaksi::findOrFail($id); 
         $transaksi->delete();
 
         Alert::success('Sukses', 'Data telah dihapus!');

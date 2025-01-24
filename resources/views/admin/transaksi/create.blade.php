@@ -22,8 +22,16 @@
                     </div>
                 </div>
 
-                <form action="/admin/transaksi/create" method="POST">
+                <form action="/admin/transaksi/detail/create" method="POST">
                     @csrf
+
+                    @if(isset($p_detail))
+            <input type="hidden" name="produk_id" value="{{ $p_detail->id }}">
+             <input type="hidden" name="produk_name" value="{{ $p_detail->name }}">
+            <input type="hidden" name="qty" value="{{ $p_detail->qty }}">
+             <input type="hidden" name="subtotal" value="{{ $p_detail->subtotal }}">
+               @endif
+
                 <div class="row p-2 align-items-center">
                     <div class="col-md-4">
                         <label for="">Nama Produk</label>
@@ -89,21 +97,34 @@
         <div class="card">
             <div class="card-body">
             <table class="table">
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Nama Produk</th>
+            <th>QTY</th>
+            <th>#</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if ($transaksi_detail->isNotEmpty())
+            @foreach ($transaksi_detail as $item)
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $item->produk_name }}</td>
+                    <td>{{ $item->qty }}</td>
+                    <td>
+                        <a href=""><i class="fas fa-times"></i></a>
+                    </td>
+                </tr>
+            @endforeach
+        @else
             <tr>
-                <th>No</th>
-                <th>Nama Produk</th>
-                <th>QTY</th>
-                <th>#</th>
+                <td colspan="4">Belum ada detail transaksi.</td>
             </tr>
-            <tr>
-                <td>1</td>
-                <td>Sprite</td>
-                <td>4</td>
-                <td>
-                    <a href=""><i class="fas fa-times"></i></a>
-                </td>
-            </tr>
-        </table>
+        @endif
+    </tbody>
+</table>
+
 
         <a href="" class="btn btn-success"><i class="fas fa-check"></i>Selesai</a>
         <a href="" class="btn btn-info"><i class="fas fa-file"></i>Pending</a>

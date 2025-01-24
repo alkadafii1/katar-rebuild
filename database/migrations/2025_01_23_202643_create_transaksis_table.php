@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('transaksis', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->bigInteger('total');
+            $table->bigInteger('total')->default(0); 
             $table->string('kasir_name')->nullable();
             $table->enum('status', ['selesai', 'pending'])->default('pending');
             $table->timestamps();
-        });
+        });        
     }
 
     /**
