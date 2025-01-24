@@ -14,11 +14,12 @@ class AdminStaffController extends Controller
      */
     public function index()
     {
-        $staff = Staff::with('jabatan')->paginate(7);
-        $title = 'Manajemen Staff';
-        $content = 'admin.staff.index';
-
-        return view('admin.layouts.wrapper', compact('content', 'title', 'staff'));
+        $staff = Staff::getAllStaff();
+        return view('admin.layouts.wrapper', [
+            'content' => 'admin.staff.index',
+            'title'   => 'Manajemen Staff',
+            'staff'   => $staff
+        ]);
     }
 
     /**
@@ -26,11 +27,11 @@ class AdminStaffController extends Controller
      */
     public function create()
     {
-        $jabatans = Jabatan::all();
-        $title = 'Tambah Staff';
-        $content = 'admin.staff.create';
-
-        return view('admin.layouts.wrapper', compact('content', 'title', 'jabatans'));
+        return view('admin.layouts.wrapper', [
+            'content'  => 'admin.staff.create',
+            'title'    => 'Tambah Staff',
+            'jabatans' => Jabatan::all(),
+        ]);
     }
 
     /**
@@ -38,14 +39,8 @@ class AdminStaffController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:staffs,email',
-            'no_tlp' => 'required|string|max:15|unique:staffs,no_tlp',
-            'jabatan_id' => 'required|exists:jabatans,id',
-        ]);
-
-        Staff::create($validatedData);
+        $data = $request->validate(Staff::getValidationRules());
+        Staff::storeStaff($data);
 
         Alert::success('Sukses', 'Staff berhasil ditambahkan');
         return redirect('/admin/staff')->with('success', 'Staff berhasil ditambahkan');
@@ -56,12 +51,12 @@ class AdminStaffController extends Controller
      */
     public function edit($id)
     {
-        $staff = Staff::findOrFail($id);
-        $jabatans = Jabatan::all();
-        $title = 'Edit Staff';
-        $content = 'admin.staff.create';
-
-        return view('admin.layouts.wrapper', compact('content', 'title', 'staff', 'jabatans'));
+        return view('admin.layouts.wrapper', [
+            'content'  => 'admin.staff.create',
+            'title'    => 'Edit Staff',
+            'staff'    => Staff::findOrFail($id),
+            'jabatans' => Jabatan::all(),
+        ]);
     }
 
     /**
@@ -69,15 +64,8 @@ class AdminStaffController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:staffs,email,' . $id,
-            'no_tlp' => 'required|string|max:15|unique:staffs,no_tlp,' . $id,
-            'jabatan_id' => 'required|exists:jabatans,id',
-        ]);
-
-        $staff = Staff::findOrFail($id);
-        $staff->update($validatedData);
+        $data = $request->validate(Staff::getValidationRules($id));
+        Staff::updateStaff($id, $data);
 
         Alert::success('Sukses', 'Data berhasil diperbarui');
         return redirect('/admin/staff')->with('success', 'Data berhasil diperbarui');
@@ -88,8 +76,7 @@ class AdminStaffController extends Controller
      */
     public function destroy($id)
     {
-        $staff = Staff::findOrFail($id);
-        $staff->delete();
+        Staff::deleteStaff($id);
 
         Alert::success('Sukses', 'Data berhasil dihapus');
         return redirect('/admin/staff')->with('success', 'Data berhasil dihapus');

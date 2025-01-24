@@ -13,7 +13,7 @@ class AdminJabatanController extends Controller
      */
     public function index()
     {
-        $jabatan = Jabatan::paginate(7);
+        $jabatan = Jabatan::getAllJabatan();
         $title = 'Manajemen Jabatan';
         $content = 'admin.jabatan.index';
         return view('admin.layouts.wrapper', compact('content', 'title', 'jabatan'));
@@ -24,11 +24,9 @@ class AdminJabatanController extends Controller
      */
     public function create()
     {
-        {
         $title = 'Tambah Jabatan';
         $content = 'admin.jabatan.create';
         return view('admin.layouts.wrapper', compact('content', 'title'));
-        }
     }
 
     /**
@@ -36,12 +34,8 @@ class AdminJabatanController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name' => 'required|unique:jabatans'
-        ]);
-        
-
-        Jabatan::create($data);
+        $data = $request->validate(Jabatan::getValidationRules());
+        Jabatan::storeJabatan($data);
         Alert::success('Sukses', 'Data berhasil ditambahkan!');
         return redirect('/admin/jabatan')->with('success', 'Data telah ditambahkan!');
     }
@@ -51,12 +45,10 @@ class AdminJabatanController extends Controller
      */
     public function edit($id)
     {
-        {
         $jabatan = Jabatan::findOrFail($id);
-        $title = 'Tambah Jabatan';
+        $title = 'Edit Jabatan';
         $content = 'admin.jabatan.create';
         return view('admin.layouts.wrapper', compact('content', 'title', 'jabatan'));
-        }
     }
 
     /**
@@ -64,16 +56,10 @@ class AdminJabatanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        {
-        $jabatan = Jabatan::findOrFail($id);
-        $data = $request->validate([
-            'name' => 'required|unique:jabatans,name,'.$jabatan->id,
-        ]);
-
-        $jabatan->update($data);
+        $data = $request->validate(Jabatan::getValidationRules($id));
+        Jabatan::updateJabatan($id, $data);
         Alert::success('Sukses', 'Jabatan berhasil diperbarui!');
         return redirect('/admin/jabatan');
-        }
     }
 
     /**
@@ -81,8 +67,7 @@ class AdminJabatanController extends Controller
      */
     public function destroy($id)
     {
-        $jabatan = Jabatan::findOrFail($id);
-        $jabatan->delete();
+        Jabatan::deleteJabatan($id);
         Alert::success('Sukses', 'Data berhasil dihapus!');
         return redirect()->back();
     }

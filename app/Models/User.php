@@ -5,28 +5,74 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['name', 'email', 'password', 'roles'];
 
-    public function roles()
+    /**
+     * Get all users.
+     */
+    public static function getAllUsers()
     {
-        return $this->belongsToMany(Role::class, 'role_user');
+        return self::all();
     }
 
-    // Check if user has a specific role
-    public function hasRole($role)
+    /**
+     * Get available roles.
+     */
+    public static function getAvailableRoles()
     {
-        return $this->roles->pluck('name')->contains($role);
+        return ['admin', 'user', 'kasir'];
     }
 
-    // Assign a role to the user
-    public function assignRole($role)
+    /**
+     * Get validation rules.
+     */
+    public static function getValidationRules($id = null)
     {
-        $role = Role::where('name', $role)->firstOrFail();
-        $this->roles()->syncWithoutDetaching([$role->id]);
+        return [
+            'name'     => 'required',
+            'email'    => 'required|email|unique:users,email,' . $id,
+            'password' => $id ? 'nullable' : 'required',
+            'roles'    => 'required|in:admin,user,kasir',
+        ];
+    }
+
+    /**
+     * Store a new user.
+     */
+    public static function storeUser($data)
+    {
+        $data['password'] = Hash::make($data['password']);
+        self::create($data);
+    }
+
+    /**
+     * Update an existing user.
+     */
+    public static function updateUser($id, $data)
+    {
+        $user = self::findOrFail($id);
+
+        if (!empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            $data['password'] = $user->password;
+        }
+
+        $user->update($data);
+    }
+
+    /**
+     * Delete a user.
+     */
+    public static function deleteUser($id)
+    {
+        $user = self::findOrFail($id);
+        $user->delete();
     }
 }

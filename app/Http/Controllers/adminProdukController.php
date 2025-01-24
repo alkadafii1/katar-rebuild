@@ -11,11 +11,11 @@ use RealRashid\SweetAlert\Facades\Alert;
 class AdminProdukController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the products.
      */
     public function index()
     {
-        $produk = Produk::with('kategori','merk')->paginate(7);
+        $produk = Produk::getAllProducts();
         $title = 'Manajemen Produk';
         $content = 'admin.produk.index';
 
@@ -23,7 +23,7 @@ class AdminProdukController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new product.
      */
     public function create()
     {
@@ -32,35 +32,23 @@ class AdminProdukController extends Controller
         $title = 'Tambah Produk';
         $content = 'admin.produk.create';
 
-        return view('admin.layouts.wrapper', compact('content', 'title', 'kategoris','merks'));
+        return view('admin.layouts.wrapper', compact('content', 'title', 'kategoris', 'merks'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created product in storage.
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'harga' => 'required|numeric|min:0',
-            'stok' => 'required|integer|min:0',
-            'kategori_id' => 'required|exists:kategoris,id',
-            'merk_id' => 'required|exists:merks,id',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-    
-        // Jika ada file gambar yang diunggah
-        if ($request->hasFile('gambar')) {
-            $validatedData['gambar'] = $request->file('gambar')->store('uploads', 'public');
-        }
-    
-        Produk::create($validatedData);
-    
+        $validatedData = $request->validate(Produk::getValidationRules());
+        Produk::storeProduct($validatedData);
+
+        Alert::success('Sukses', 'Produk berhasil ditambahkan');
         return redirect('/admin/produk')->with('success', 'Produk berhasil ditambahkan');
     }
-    
+
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified product.
      */
     public function edit($id)
     {
@@ -70,40 +58,27 @@ class AdminProdukController extends Controller
         $title = 'Edit Produk';
         $content = 'admin.produk.create';
 
-        return view('admin.layouts.wrapper', compact('content', 'title', 'produk', 'kategoris','merks'));
+        return view('admin.layouts.wrapper', compact('content', 'title', 'produk', 'kategoris', 'merks'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified product in storage.
      */
     public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'harga' => 'required|numeric|min:0',
-            'stok' => 'required|integer|min:0',
-            'kategori_id' => 'required|exists:kategoris,id',
-            'merk_id' => 'required|exists:merks,id',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
-        ]);
-    
-        if ($request->hasFile('gambar')) {
-            $validatedData['gambar'] = $request->file('gambar')->store('uploads', 'public');
-        }
-    
-        $produk = Produk::findOrFail($id); 
-        $produk->update($validatedData); 
+        $validatedData = $request->validate(Produk::getValidationRules());
+        Produk::updateProduct($id, $validatedData);
 
-        return redirect('/admin/produk')->with('success', 'Data berhasil diedit!');
+        Alert::success('Sukses', 'Produk berhasil diperbarui');
+        return redirect('/admin/produk')->with('success', 'Produk berhasil diperbarui');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified product from storage.
      */
     public function destroy($id)
     {
-        $produk = Produk::findOrFail($id);
-        $produk->delete();
+        Produk::deleteProduct($id);
 
         Alert::success('Sukses', 'Data telah dihapus!');
         return redirect()->back()->with('success', 'Data telah dihapus!');

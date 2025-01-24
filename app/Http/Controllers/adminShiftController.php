@@ -7,14 +7,14 @@ use App\Models\Shift;
 use App\Models\Staff;
 use RealRashid\SweetAlert\Facades\Alert;
 
-class adminShiftController extends Controller
+class AdminShiftController extends Controller
 {
     /**
      * Display a listing of the shifts.
      */
     public function index()
     {
-        $shifts = Shift::with('staff')->paginate(7);
+        $shifts = Shift::getAllShifts();
         $title = 'Manajemen Shift';
         $content = 'admin.shift.index';
 
@@ -38,13 +38,8 @@ class adminShiftController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'staff_id' => 'required|exists:staffs,id',
-            'jama_kerja' => 'required|date_format:H:i',
-            'jam_pulang' => 'required|date_format:H:i',
-        ]);
-
-        Shift::create($validatedData);
+        $validatedData = $request->validate(Shift::getValidationRules());
+        Shift::storeShift($validatedData);
 
         Alert::success('Sukses', 'Shift berhasil ditambahkan');
         return redirect('/admin/shift')->with('success', 'Shift berhasil ditambahkan');
@@ -68,14 +63,8 @@ class adminShiftController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'staff_id' => 'required|exists:staffs,id',
-            'jama_kerja' => 'required|date_format:H:i',
-            'jam_pulang' => 'required|date_format:H:i',
-        ]);
-
-        $shift = Shift::findOrFail($id);
-        $shift->update($validatedData);
+        $validatedData = $request->validate(Shift::getValidationRules());
+        Shift::updateShift($id, $validatedData);
 
         Alert::success('Sukses', 'Shift berhasil diperbarui');
         return redirect('/admin/shift')->with('success', 'Shift berhasil diperbarui');
@@ -86,8 +75,7 @@ class adminShiftController extends Controller
      */
     public function destroy($id)
     {
-        $shift = Shift::findOrFail($id);
-        $shift->delete();
+        Shift::deleteShift($id);
 
         Alert::success('Sukses', 'Shift berhasil dihapus');
         return redirect('/admin/shift')->with('success', 'Shift berhasil dihapus');

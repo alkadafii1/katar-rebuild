@@ -13,7 +13,7 @@ class adminMerkController extends Controller
      */
     public function index()
     {
-        $merk = Merk::paginate(7);
+        $merk = Merk::getAllBrands();
         $title = 'Manajemen Merk';
         $content = 'admin.merk.index';
         return view('admin.layouts.wrapper', compact('content', 'title', 'merk'));
@@ -24,12 +24,9 @@ class adminMerkController extends Controller
      */
     public function create()
     {
-        {
-        $merk = Merk::all();
         $title = 'Tambah Merk';
         $content = 'admin.merk.create';
         return view('admin.layouts.wrapper', compact('content', 'title'));
-        }
     }
 
     /**
@@ -37,28 +34,22 @@ class adminMerkController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name' => 'required|unique:merks'
-        ]);
+        $validatedData = $request->validate(Merk::getValidationRules());
+        Merk::storeBrand($validatedData);
 
-        Merk::create($data);
         Alert::success('Sukses', 'Merk berhasil ditambahkan!');
         return redirect('/admin/merk')->with('success', 'Data telah ditambahkan!');
     }
 
-    public function show(string $id)
-    {
-        //
-    }
-
+    /**
+     * Show the form for editing the specified resource.
+     */
     public function edit($id)
     {
-        {
         $merk = Merk::findOrFail($id);
-        $title = 'Tambah Merk';
+        $title = 'Edit Merk';
         $content = 'admin.merk.create';
         return view('admin.layouts.wrapper', compact('content', 'title', 'merk'));
-        }
     }
 
     /**
@@ -66,14 +57,11 @@ class adminMerkController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $merk = Merk::find($id);
-        $data = $request->validate([
-            'name' => 'required|unique:merks,name,' . $merk->id
-        ]);
+        $validatedData = $request->validate(Merk::getValidationRules($id));
+        Merk::updateBrand($id, $validatedData);
 
-        $merk->update($data);
         Alert::success('Sukses', 'Data berhasil diperbarui!');
-        return redirect('/admin/merk');
+        return redirect('/admin/merk')->with('success', 'Data berhasil diperbarui!');
     }
 
     /**
@@ -81,10 +69,9 @@ class adminMerkController extends Controller
      */
     public function destroy($id)
     {
-        $merk = Merk::findOrFail($id);
+        Merk::deleteBrand($id);
 
-        $merk->delete();
         Alert::success('Sukses', 'Merk berhasil dihapus!');
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Merk berhasil dihapus!');
     }
 }
