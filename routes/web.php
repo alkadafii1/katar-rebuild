@@ -5,6 +5,7 @@ use App\Http\Controllers\adminUserController;
 use App\Http\Controllers\adminProdukController;
 use App\Http\Controllers\adminKategoriController;
 use App\Http\Controllers\adminMerkController;
+use App\Http\Controllers\adminShiftController;
 use App\Http\Controllers\adminStaffController;
 use App\Http\Controllers\adminTransaksiController;
 use App\Http\Controllers\adminTransaksiDetailController;
@@ -46,6 +47,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('/produk', adminProdukController::class);
         
         Route::resource('/user', adminUserController::class);
+
+        Route::resource('/shift',adminShiftController::class);
     });
 
     // Post Management
