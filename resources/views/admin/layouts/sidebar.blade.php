@@ -20,26 +20,6 @@
           </a>
         </li>
 
-        <!-- Transaksi -->
-        <li class="nav-item">
-          <a href="/admin/transaksi" class="nav-link {{ Request::is('admin/transaksi') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-exchange-alt"></i>
-            <p>
-              Transaksi
-            </p>
-          </a>
-        </li>
-
-        <!-- Produk Management Menu -->
-        <li class="nav-item">
-          <a href="/admin/produk" class="nav-link {{ Request::is('admin/produk') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-table"></i>
-            <p>
-              Produk
-            </p>
-          </a>
-        </li>
-
         <!-- Jabatan Management Menu -->
         <li class="nav-item">
           <a href="/admin/jabatan" class="nav-link {{ Request::is('admin/jabatan') ? 'active' : '' }}">
@@ -56,6 +36,16 @@
             <i class="nav-icon fas fa-user"></i>
             <p>
               Staff
+            </p>
+          </a>
+        </li>
+
+       <!-- Staff Management Menu -->
+       <li class="nav-item">
+          <a href="/admin/shift" class="nav-link {{ Request::is('admin/shift') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-user"></i>
+            <p>
+              Shift
             </p>
           </a>
         </li>
@@ -80,6 +70,25 @@
           </a>
         </li>
 
+        <!-- Produk Management Menu -->
+        <li class="nav-item">
+          <a href="/admin/produk" class="nav-link {{ Request::is('admin/produk') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-table"></i>
+            <p>
+              Produk
+            </p>
+          </a>
+        </li>
+
+        <!-- Transaksi -->
+        <li class="nav-item">
+          <a href="/admin/transaksi" class="nav-link {{ Request::is('admin/transaksi') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-exchange-alt"></i>
+            <p>
+              Transaksi
+            </p>
+          </a>
+        </li>
 
         <!-- User Management Menu -->
         <li class="nav-item">

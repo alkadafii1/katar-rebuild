@@ -9,6 +9,8 @@ class Merk extends Model
 {
     use HasFactory;
 
+    protected $table= 'merks';
+
     protected $fillable = ['name'];
 
     public function produk()

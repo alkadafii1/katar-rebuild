@@ -23,20 +23,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
 
-    // Prefix Admin Routes
-    Route::prefix('admin')->group(function () {
+        // Prefix Admin Routes
+        Route::prefix('admin')->group(function () {
         Route::resource('/kategori', adminKategoriController::class);
         Route::resource('/merk', adminMerkController::class);
         Route::resource('/transaksi', adminTransaksiController::class);
 
-// CRUD Jabatan
-Route::resource('/jabatan',adminJabatanController::class);
+        // CRUD Jabatan
+        Route::resource('/jabatan',adminJabatanController::class);
 
-// CRUD Staff
-Route::resource('/staff',adminStaffController::class);
+        // CRUD Staff
+        Route::resource('/staff',adminStaffController::class);
 
-// CRUD Kategori
-Route::resource('/kategori', adminKategoriController::class);
+        // CRUD Kategori
+        Route::resource('/kategori', adminKategoriController::class);
 
 
         // Nested Route untuk Transaksi Detail
