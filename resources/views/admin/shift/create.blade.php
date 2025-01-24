@@ -14,18 +14,22 @@
                         <select name="staff_id" class="form-control @error('staff_id') is-invalid @enderror" required>
                             <option value="" disabled selected>Pilih Staff</option>
                             @foreach ($staffs as $staff)
-                                <option value="{{ $staff->id }}" {{ old('staff_id') == $staff->id ? 'selected' : '' }}>{{ $staff->name }}</option>
+                                <option value="{{ $staff->id }}" 
+                                    {{ old('staff_id', isset($shift) ? $shift->staff_id : '') == $staff->id ? 'selected' : '' }}>
+                                    {{ $staff->name }}
+                                </option>
                             @endforeach
                         </select>
                         @error('staff_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-
+                    
                     <!-- Input Jam Kerja -->
                     <div class="form-group">
                         <label for="jama_kerja">Jam Kerja</label>
-                        <input type="time" name="jama_kerja" class="form-control @error('jama_kerja') is-invalid @enderror" value="{{ old('jama_kerja') }}">
+                        <input type="time" name="jama_kerja" class="form-control @error('jama_kerja') is-invalid @enderror" 
+                            value="{{ old('jama_kerja', isset($shift) ? $shift->jama_kerja : '') }}">
                         @error('jama_kerja')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -34,11 +38,13 @@
                     <!-- Input Jam Pulang -->
                     <div class="form-group">
                         <label for="jam_pulang">Jam Pulang</label>
-                        <input type="time" name="jam_pulang" class="form-control @error('jam_pulang') is-invalid @enderror" value="{{ old('jam_pulang') }}">
+                        <input type="time" name="jam_pulang" class="form-control @error('jam_pulang') is-invalid @enderror"
+                            value="{{ old('jam_pulang', isset($shift) ? $shift->jam_pulang : '') }}">
                         @error('jam_pulang')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
 
                     <!-- Tombol -->
                     <a href="/admin/shift" class="btn btn-info mt-2">

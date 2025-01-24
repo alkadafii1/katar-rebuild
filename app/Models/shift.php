@@ -11,6 +11,7 @@ class Shift extends Model
 
     protected $table = 'shifts';
     protected $fillable = ['staff_id', 'jama_kerja', 'jam_pulang'];
+    public $timestamps = false;
 
     // Relasi ke model Staff
     public function staff()
